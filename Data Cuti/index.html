@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Data Cuti Karyawan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Link ke File CSS Eksternal -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Supabase & Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="min-h-screen relative text-sm md:text-base">
+
+    <!-- Header (Bright Blue/Cyan Gradient) -->
+    <header class="px-4 md:px-8 py-4 shadow-lg flex justify-between items-center relative z-20 h-[80px]" style="background: var(--header-bg);">
+        
+        <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-bold text-white tracking-tight">Semua Data Cuti</h1>
+        </div>
+        
+        <!-- Tabs Pill Style -->
+        <div class="bg-white/20 p-1 rounded-lg flex space-x-1">
+            <button id="tab-calendar" class="tab-button active px-4 py-1.5 text-sm">Kalender</button>
+            <button id="tab-data" class="tab-button px-4 py-1.5 text-sm">Data</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="py-6 px-4 md:px-8 content-area-height w-full" style="background-color: var(--bg-body);"> 
+        
+        <!-- Tampilan Data Cuti (List View) -->
+        <div id="data-view" class="content-view hidden h-full overflow-y-auto pr-2 custom-scrollbar">
+            <!-- Filter Bar & Month Navigator -->
+            <div class="bg-surface rounded-xl p-4 mb-6 border border-border-color bg-[#1e293b]">
+                <div class="flex flex-col xl:flex-row gap-4 items-center justify-between">
+                     
+                     <!-- Month Navigator for Data -->
+                     <div class="flex items-center gap-4 bg-[#0f172a] p-1.5 rounded-lg border border-border-color shadow-sm w-full xl:w-auto justify-between xl:justify-start">
+                         <button id="data-prev" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 rounded-md transition"><i class="ph-bold ph-caret-left"></i></button>
+                         <h2 id="data-month-year" class="text-base font-bold text-white min-w-[150px] text-center select-none">Desember 2025</h2>
+                         <button id="data-next" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 rounded-md transition"><i class="ph-bold ph-caret-right"></i></button>
+                     </div>
+
+                     <!-- Filters & Search Input -->
+                     <div class="flex flex-col md:flex-row gap-3 w-full xl:w-auto">
+                        <!-- Group Filter -->
+                        <div class="relative w-full md:w-48">
+                            <i class="ph ph-users-three absolute left-3 top-2.5 text-slate-500"></i>
+                            <select id="filter-group" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
+                                <option value="all">Semua Group</option>
+                                <!-- Populated by JS -->
+                            </select>
+                            <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
+                        </div>
+
+                        <!-- Jabatan Filter -->
+                        <div class="relative w-full md:w-48">
+                            <i class="ph ph-briefcase absolute left-3 top-2.5 text-slate-500"></i>
+                            <select id="filter-jabatan" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
+                                <option value="all">Semua Jabatan</option>
+                                <!-- Populated by JS -->
+                            </select>
+                            <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="relative w-full md:w-64">
+                            <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-500"></i>
+                            <input id="data-search" type="text" placeholder="Cari nama karyawan..." class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full" />
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+            <!-- GRID 3 KOLOM -->
+            <div id="data-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-10">
+                <!-- Data List populated by JS -->
+            </div>
+        </div>
+
+        <!-- Tampilan Kalender Cuti (Split View) -->
+        <div id="calendar-view" class="content-view h-full flex flex-col"> 
+            
+            <!-- Grid Layout: Calendar (Left) & Details (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow h-full min-h-0"> 
+                
+                <!-- 1. Grid Kalender (8 cols) -->
+                <div id="calendar-container" class="lg:col-span-8 h-full flex flex-col bg-[#1e293b] rounded-xl border border-border-color overflow-hidden">
+                    
+                    <!-- Calendar Controls Header -->
+                    <div class="flex justify-between items-center p-4 border-b border-border-color bg-[#1e293b]">
+                         <button id="cal-prev" class="text-slate-400 hover:text-white p-2"><i class="ph-bold ph-caret-left"></i></button>
+                         <h2 id="cal-month-year" class="text-lg font-bold text-white">Desember 2025</h2>
+                         <div class="flex items-center gap-3">
+                             <button id="cal-next" class="text-slate-400 hover:text-white p-2"><i class="ph-bold ph-caret-right"></i></button>
+                             <button class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-md font-medium">Month</button>
+                         </div>
+                    </div>
+
+                    <!-- The Calendar Grid -->
+                    <div class="flex-grow overflow-y-auto custom-scrollbar">
+                        <!-- Day Headers -->
+                        <div class="grid grid-cols-7 border-b border-border-color">
+                            <div class="day-header">Sen</div>
+                            <div class="day-header">Sel</div>
+                            <div class="day-header">Rab</div>
+                            <div class="day-header">Kam</div>
+                            <div class="day-header">Jum</div>
+                            <div class="day-header">Sab</div>
+                            <div class="day-header">Min</div>
+                        </div>
+                        
+                        <!-- Days -->
+                        <div id="calendar-grid" class="calendar-grid bg-[#0f172a]"> 
+                            <!-- Calendar populated by JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2. Detail Cuti Harian (4 cols) -->
+                <div id="daily-cuti-detail-wrapper" class="lg:col-span-4 h-full min-h-0">
+                    <div id="daily-cuti-detail" class="bg-[#1e293b] rounded-xl border border-border-color h-full flex flex-col overflow-hidden">
+                        <!-- Section Header -->
+                        <div class="p-4 border-b border-border-color flex items-center gap-2">
+                             <i class="ph-fill ph-calendar-check text-blue-500 text-lg"></i>
+                             <h3 id="detail-title" class="text-base font-bold text-white">Cuti pada Tanggal ...</h3>
+                        </div>
+                        
+                        <!-- Scrollable List -->
+                        <div class="flex-grow overflow-y-auto p-4 min-h-0 custom-scrollbar bg-[#0f172a]/50">
+                            <div id="detail-list" class="space-y-3"> 
+                                <div class="flex flex-col items-center justify-center h-40 text-slate-500">
+                                    <p>Pilih tanggal pada kalender</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- MODAL DIALOG -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <!-- Modal Panel -->
+                <div class="relative transform overflow-hidden rounded-xl bg-[#1e293b] border border-border-color text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 scale-95" id="modal-panel">
+                    
+                    <div class="px-6 py-5 border-b border-border-color flex justify-between items-center">
+                         <h3 class="text-lg font-bold text-white">Detail Cuti</h3>
+                         <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="ph-bold ph-x"></i></button>
+                    </div>
+
+                    <div class="px-6 py-6" id="modal-content">
+                        <!-- Content Injected -->
+                    </div>
+
+                    <div class="px-6 py-4 bg-[#0f172a] border-t border-border-color flex justify-end">
+                        <button onclick="closeModal()" class="px-4 py-2 bg-slate-700 text-white rounded-lg text-sm hover:bg-slate-600">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link ke File JS Eksternal -->
+    <script src="script.js"></script>
+</body>
+</html>
