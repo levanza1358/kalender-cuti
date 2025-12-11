@@ -15,6 +15,7 @@ let selectedDayElement = null;
 let dataViewYear = new Date().getFullYear();
 let dataViewMonth = new Date().getMonth();
 
+// --- FUNGSI FETCH DATA ---
 async function fetchCutiData() {
     try {
         // Menambahkan 'group' pada query jika kolom tersebut ada di tabel users
@@ -45,7 +46,7 @@ async function fetchCutiData() {
                 tanggalPengajuan: cuti.tanggal_pengajuan,
                 tanggalCutiList: tanggalList,
                 jabatan: cuti.users ? cuti.users.jabatan : 'N/A',
-                group: cuti.users && cuti.users.group ? cuti.users.group : '-', // Handling group
+                group: cuti.users && cuti.users.group ? cuti.users.group : '-', 
                 sisaCuti: Math.floor(Math.random() * 12) 
             };
         });
@@ -60,7 +61,56 @@ async function fetchCutiData() {
     }
 }
 
-// --- MODAL LOGIC (Diperlukan untuk Calendar View) ---
+// --- FUNGSI REALTIME (AUTO UPDATE) ---
+function setupRealtimeListener() {
+    console.log("Mengaktifkan Realtime Listener...");
+    
+    supabaseClient
+        .channel('public:cuti') // Nama channel bebas
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'cuti' }, async (payload) => {
+            console.log('Perubahan Data Terdeteksi:', payload);
+            
+            // Tampilkan notifikasi kecil
+            showToast("Data diperbarui...", "blue");
+
+            // Ambil data terbaru
+            await fetchCutiData();
+
+            // Refresh tampilan sesuai tab yang aktif
+            const dataView = document.getElementById('data-view');
+            const isDataViewActive = !dataView.classList.contains('hidden');
+
+            if (isDataViewActive) {
+                updateDataList(); // Refresh list data
+            } else {
+                // Refresh kalender dengan posisi bulan/tahun yang sedang dilihat user
+                renderCalendar(allCutiData, calendarYear, calendarMonth, false);
+                
+                // Jika user sedang memilih hari, refresh detail hariannya juga
+                if (selectedDayElement) {
+                   const dateString = selectedDayElement.dataset.date;
+                   const cutiOnThisDay = allCutiData.filter(item => item.tanggalCutiList && item.tanggalCutiList.includes(dateString));
+                   displayDailyDetail(dateString, cutiOnThisDay);
+                }
+            }
+        })
+        .subscribe();
+}
+
+// Helper: Tampilkan Toast Notifikasi Sederhana
+function showToast(message, color = "blue") {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-5 right-5 bg-${color}-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-semibold z-50 animate-bounce transition-opacity duration-500`;
+    toast.innerHTML = `<i class="ph-bold ph-arrows-clockwise mr-2"></i> ${message}`;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+// --- MODAL LOGIC (Calendar View) ---
 const modal = document.getElementById('detail-modal');
 const modalBackdrop = document.getElementById('modal-backdrop');
 const modalPanel = document.getElementById('modal-panel');
@@ -124,14 +174,16 @@ function updateDataViewHeader() {
 }
 
 function populateFilters() {
-    // Ambil unique values untuk Group dan Jabatan
     const groups = [...new Set(allCutiData.map(item => item.group))].sort();
     const jabatans = [...new Set(allCutiData.map(item => item.jabatan))].sort();
 
     const groupSelect = document.getElementById('filter-group');
     const jabatanSelect = document.getElementById('filter-jabatan');
 
-    // Reset options (keep the first 'All' option)
+    // Simpan nilai seleksi saat ini agar tidak ter-reset saat auto-update
+    const currentGroup = groupSelect.value;
+    const currentJabatan = jabatanSelect.value;
+
     groupSelect.innerHTML = '<option value="all">Semua Group</option>';
     jabatanSelect.innerHTML = '<option value="all">Semua Jabatan</option>';
 
@@ -148,6 +200,10 @@ function populateFilters() {
         opt.textContent = j;
         jabatanSelect.appendChild(opt);
     });
+
+    // Kembalikan nilai seleksi (jika opsi masih ada)
+    if(groups.includes(currentGroup)) groupSelect.value = currentGroup;
+    if(jabatans.includes(currentJabatan)) jabatanSelect.value = currentJabatan;
 }
 
 function navigateDataMonth(dir) {
@@ -173,24 +229,20 @@ function updateDataList() {
     const filterGroup = document.getElementById('filter-group').value;
     const filterJabatan = document.getElementById('filter-jabatan').value;
 
-    // 1. Filter by Month first (Base Filter)
     let filtered = allCutiData.filter(item => {
         if (!item.tanggalPengajuan) return false;
         const date = new Date(item.tanggalPengajuan);
         return date.getFullYear() === dataViewYear && date.getMonth() === dataViewMonth;
     });
     
-    // 2. Filter by Group
     if (filterGroup !== 'all') {
         filtered = filtered.filter(item => item.group === filterGroup);
     }
 
-    // 3. Filter by Jabatan
     if (filterJabatan !== 'all') {
         filtered = filtered.filter(item => item.jabatan === filterJabatan);
     }
 
-    // 4. Filter by Search Term
     if (searchTerm) {
         filtered = filtered.filter(item => 
             item.nama.toLowerCase().includes(searchTerm) || 
@@ -224,6 +276,8 @@ function renderDataList(data) {
         const card = document.createElement('div');
         card.className = 'bg-[#1e293b] border border-border-color rounded-xl p-5 hover:border-blue-500/30 transition-all duration-300 flex flex-col gap-3 relative overflow-hidden';
         
+        card.onclick = () => openModal(item);
+
         card.innerHTML = `
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-slate-700/50 border border-slate-600 flex items-center justify-center text-blue-400 font-bold shrink-0">
@@ -386,9 +440,7 @@ function displayDailyDetail(dateString, dailyData) {
     dailyData.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'bg-[#1e293b] p-3 rounded-lg border border-border-color hover:border-blue-500/50 transition cursor-pointer group';
-        // Tidak ada aksi klik lagi di sini (calendar view detail)
 
-        // Re-added onclick logic here
         card.onclick = () => openModal(item);
 
         card.innerHTML = `
@@ -462,4 +514,5 @@ document.getElementById('data-next').addEventListener('click', () => navigateDat
 window.onload = async function() {
     await fetchCutiData();
     switchTab('calendar-view'); 
+    setupRealtimeListener(); // Start listening
 };
