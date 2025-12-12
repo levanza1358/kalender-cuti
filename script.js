@@ -129,7 +129,11 @@ function openModal(item) {
             </div>
             <div>
                 <h4 class="text-xl font-bold text-white">${item.nama}</h4>
-                <p class="text-sm text-slate-400">${item.jabatan}</p>
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <span>${item.jabatan}</span>
+                    <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                    <span class="text-blue-400 font-medium">Group ${item.group}</span>
+                </div>
             </div>
         </div>
         
@@ -436,6 +440,16 @@ function displayDailyDetail(dateString, dailyData) {
             </div>`;
         return;
     }
+
+    // --- SORTING LOGIC ADDED HERE ---
+    // Sort dailyData by Group (Alphabetical)
+    dailyData.sort((a, b) => {
+        const groupA = (a.group || '').toString().toLowerCase();
+        const groupB = (b.group || '').toString().toLowerCase();
+        if (groupA < groupB) return -1;
+        if (groupA > groupB) return 1;
+        return 0;
+    });
     
     dailyData.forEach((item, index) => {
         const card = document.createElement('div');
@@ -455,12 +469,15 @@ function displayDailyDetail(dateString, dailyData) {
                         <h4 class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">${item.nama}</h4>
                     </div>
                     <p class="text-xs text-slate-400 mt-0.5 mb-1">${item.jenisCuti}</p>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-[10px] bg-blue-900/30 text-blue-300 border border-blue-900/50 px-1.5 py-0.5 rounded">
                             ${item.lamaHari} Hari
                         </span>
                         <span class="text-[10px] text-slate-500 border border-slate-700 px-1.5 py-0.5 rounded">
                             ${item.jabatan}
+                        </span>
+                        <span class="text-[10px] text-emerald-400 border border-emerald-900/30 bg-emerald-900/10 px-1.5 py-0.5 rounded">
+                            Group ${item.group}
                         </span>
                     </div>
                 </div>
