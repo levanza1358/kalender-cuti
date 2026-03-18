@@ -1,0 +1,127 @@
+@media (min-width: 1025px) {
+    body {
+        overflow-y: hidden;
+    }
+
+    main {
+        height: 100dvh;
+        min-height: 100dvh;
+        overflow: hidden;
+    }
+
+    .app-content-shell {
+        overflow: hidden;
+    }
+
+    .calendar-view-shell {
+        height: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 1024px) {
+    body {
+        overflow-y: auto;
+    }
+
+    main {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .calendar-day {
+        min-height: 138px;
+    }
+
+    .calendar-month-summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow: auto;
+    }
+
+    body::before {
+        opacity: 0.14;
+    }
+
+    .ambient-orb {
+        opacity: 0.48;
+    }
+
+    .hero-shell,
+    .glass-panel {
+        border-radius: 24px;
+    }
+
+    .hero-title {
+        font-size: 1.65rem;
+    }
+
+    .status-pill {
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+    }
+
+    .content-view {
+        min-height: auto;
+    }
+
+    .calendar-day {
+        min-height: 118px;
+        padding: 0.75rem 0.55rem 0.65rem;
+    }
+
+    .calendar-day-date {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.82rem;
+    }
+
+    .calendar-day-count,
+    .detail-meta-chip,
+    .data-filter-chip,
+    .legend-pill {
+        font-size: 0.66rem;
+    }
+
+    .day-header {
+        padding: 0.75rem 0;
+        font-size: 0.64rem;
+        letter-spacing: 0.18em;
+    }
+
+    .action-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+    .app-header-shell {
+        min-height: auto;
+    }
+
+    .app-header-title {
+        white-space: normal;
+    }
+
+    .app-logo-wrap {
+        padding: 0.35rem 0.56rem;
+        margin-right: 0;
+        border-radius: 14px;
+    }
+
+    .app-logo {
+        height: 1.8rem;
+        max-width: 8.5rem;
+    }
+
+    .header-status {
+        display: none;
+    }
+
+    .header-today-button {
+        display: inline-flex;
+    }
+}

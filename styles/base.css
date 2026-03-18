@@ -1,0 +1,87 @@
+:root {
+    --bg-body: #040814;
+    --bg-panel: rgba(9, 15, 29, 0.82);
+    --bg-panel-strong: rgba(8, 13, 24, 0.94);
+    --bg-card: rgba(11, 18, 34, 0.94);
+    --header-bg: linear-gradient(135deg, rgba(9, 15, 29, 0.85), rgba(16, 24, 44, 0.72));
+    --accent-primary: #67e8f9;
+    --accent-secondary: #38bdf8;
+    --accent-warm: #f59e0b;
+    --accent-danger: #fb7185;
+    --text-main: #f8fafc;
+    --text-secondary: #d9e2f1;
+    --text-muted: #8ea0bb;
+    --border-color: rgba(148, 163, 184, 0.16);
+    --border-strong: rgba(148, 163, 184, 0.28);
+    --shadow-soft: 0 24px 60px rgba(2, 6, 23, 0.55);
+    --shadow-heavy: 0 40px 90px rgba(2, 6, 23, 0.72);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    color: var(--text-main);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background:
+        linear-gradient(180deg, #050913 0%, #050913 100%);
+    background-color: var(--bg-body);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+}
+
+::selection {
+    background: rgba(103, 232, 249, 0.25);
+    color: #f8fafc;
+}
+
+main {
+    isolation: isolate;
+    min-height: 100vh;
+}
+
+.ambient-orb {
+    position: fixed;
+    border-radius: 999px;
+    pointer-events: none;
+    filter: blur(20px);
+    opacity: 0;
+}
+
+.ambient-orb-one {
+    width: 18rem;
+    height: 18rem;
+    left: -4rem;
+    top: 5rem;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.32), transparent 68%);
+}
+
+.ambient-orb-two {
+    width: 20rem;
+    height: 20rem;
+    right: -2rem;
+    top: 2rem;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.28), transparent 70%);
+}

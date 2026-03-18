@@ -1,0 +1,84 @@
+.glass-panel {
+    background:
+        linear-gradient(180deg, rgba(17, 25, 45, 0.98), rgba(15, 22, 40, 0.98));
+    border-radius: 22px;
+    border: 1px solid rgba(96, 115, 151, 0.34);
+    box-shadow: none;
+}
+
+.glass-card,
+.glass-card-sm {
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 38%),
+        linear-gradient(180deg, rgba(11, 18, 34, 0.96), rgba(8, 13, 25, 0.98));
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.44);
+}
+
+.glass-card {
+    border-radius: 22px;
+}
+
+.glass-card-sm {
+    border-radius: 18px;
+}
+
+.glass-card:hover,
+.glass-card-sm:hover {
+    border-color: rgba(56, 189, 248, 0.32);
+    box-shadow: 0 24px 48px rgba(2, 6, 23, 0.5);
+}
+
+.glass-header {
+    box-shadow: none;
+}
+
+.tab-button {
+    border-radius: 10px;
+    border: 1px solid transparent;
+    color: rgba(255, 255, 255, 0.72);
+    background: transparent;
+    font-weight: 700;
+    transition: transform 0.18s ease, color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.tab-button:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-button.active {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.96);
+    color: #082032;
+    box-shadow: none;
+}
+
+.app-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.app-banner--loading {
+    border-color: rgba(251, 191, 36, 0.2);
+    background: rgba(245, 158, 11, 0.08);
+    color: #fde68a;
+}
+
+.app-banner--error {
+    border-color: rgba(251, 113, 133, 0.2);
+    background: rgba(244, 63, 94, 0.08);
+    color: #fecdd3;
+}
+
+.app-banner--neutral {
+    background: rgba(15, 23, 42, 0.8);
+    color: #dbeafe;
+}
