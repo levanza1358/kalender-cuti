@@ -17,6 +17,47 @@ function handleJumpToToday() {
     showToast("Kalender difokuskan ke hari ini.");
 }
 
+function isMobileViewport() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+function updateMobileFilterToggleState() {
+    if (!dom.dataFilterToggleButton || !dom.dataToolbarControls) {
+        return;
+    }
+
+    if (!isMobileViewport()) {
+        dom.dataToolbarControls.classList.remove("is-collapsed");
+        dom.dataFilterToggleButton.setAttribute("aria-expanded", "true");
+        dom.dataFilterToggleButton.innerHTML = `
+            <i class="ph-bold ph-sliders-horizontal"></i>
+            Filter & Cari
+        `;
+        return;
+    }
+
+    const activeFilterCount = getActiveFilters().length;
+    const isCollapsed = dom.dataToolbarControls.classList.contains("is-collapsed");
+    dom.dataFilterToggleButton.setAttribute("aria-expanded", String(!isCollapsed));
+    dom.dataFilterToggleButton.innerHTML = `
+        <i class="ph-bold ${isCollapsed ? "ph-sliders-horizontal" : "ph-x"}"></i>
+        Filter & Cari${activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+    `;
+}
+
+function toggleMobileFilters(forceOpen = null) {
+    if (!dom.dataToolbarControls || !isMobileViewport()) {
+        return;
+    }
+
+    const shouldOpen = typeof forceOpen === "boolean"
+        ? forceOpen
+        : dom.dataToolbarControls.classList.contains("is-collapsed");
+
+    dom.dataToolbarControls.classList.toggle("is-collapsed", !shouldOpen);
+    updateMobileFilterToggleState();
+}
+
 function switchTab(viewId, options = {}) {
     const { autoSelectToday = false, preserveSelectedDate = true } = options;
 
@@ -28,6 +69,7 @@ function switchTab(viewId, options = {}) {
         dom.dataView.classList.remove("hidden");
         updateDataViewHeader();
         updateDataList();
+        updateMobileFilterToggleState();
         return;
     }
 
@@ -166,6 +208,7 @@ dom.filterJabatan.addEventListener("change", () => updateDataList());
 dom.filterJenis.addEventListener("change", () => updateDataList());
 dom.resetFiltersButton.addEventListener("click", resetDataFilters);
 dom.jumpTodayButton.addEventListener("click", handleJumpToToday);
+dom.dataFilterToggleButton.addEventListener("click", () => toggleMobileFilters());
 
 dom.tabData.addEventListener("click", () => switchTab("data-view"));
 dom.tabCalendar.addEventListener("click", () => switchTab("calendar-view", { preserveSelectedDate: true }));
@@ -184,7 +227,23 @@ document.addEventListener("keydown", (event) => {
 
 window.closeModal = closeModal;
 
+window.addEventListener("resize", () => {
+    if (!dom.dataToolbarControls) {
+        return;
+    }
+
+    if (isMobileViewport()) {
+        dom.dataToolbarControls.classList.add("is-collapsed");
+    } else {
+        dom.dataToolbarControls.classList.remove("is-collapsed");
+    }
+    updateMobileFilterToggleState();
+});
+
 window.addEventListener("load", async () => {
+    if (isMobileViewport() && dom.dataToolbarControls) {
+        dom.dataToolbarControls.classList.add("is-collapsed");
+    }
     updateLiveStatusBadge();
     updateDataViewHeader();
     renderHeroStatsSkeleton();

@@ -35,7 +35,7 @@ function renderDataSummary(data) {
         : summary.rataRata.toFixed(1);
 
     dom.dataSummary.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
             <div class="month-summary-card">
                 <p class="month-summary-card-label">Pengajuan</p>
                 <p class="month-summary-card-value">${summary.totalPengajuan}</p>
@@ -245,6 +245,8 @@ function updateDataList() {
     if (isDataViewActive()) {
         renderHeroStats();
     }
+
+    updateMobileFilterToggleState();
 }
 
 function navigateDataMonth(direction) {

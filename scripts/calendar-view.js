@@ -182,8 +182,9 @@ function renderCalendar(data, year, month, autoSelectToday = false, preferredDat
             const countPill = document.createElement("div");
             countPill.className = "calendar-day-count";
             countPill.innerHTML = `
-                <i class="ph-bold ph-users-three"></i>
-                ${escapeHtml(`${dailyData.length} orang`)}
+                <i class="ph-bold ph-users-three calendar-day-count-icon"></i>
+                <span class="calendar-day-count-value">${escapeHtml(String(dailyData.length))}</span>
+                <span class="calendar-day-count-label">orang</span>
             `;
             dayDiv.appendChild(countPill);
         }

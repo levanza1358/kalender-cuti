@@ -31,6 +31,8 @@ const dom = {
     dataSummary: document.getElementById("data-summary"),
     dataList: document.getElementById("data-list"),
     dataSearch: document.getElementById("data-search"),
+    dataFilterToggleButton: document.getElementById("toggle-data-filters"),
+    dataToolbarControls: document.getElementById("data-toolbar-controls"),
     filterGroup: document.getElementById("filter-group"),
     filterJabatan: document.getElementById("filter-jabatan"),
     filterJenis: document.getElementById("filter-jenis"),

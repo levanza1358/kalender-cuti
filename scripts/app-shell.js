@@ -11,8 +11,8 @@
         <main class="min-h-screen flex flex-col relative z-10">
             <header class="relative z-20">
                 <div class="glass-header hero-shell hero-shell--compact app-header-shell px-4 md:px-8 py-4">
-                    <div class="flex items-center justify-between gap-4">
-                        <div class="min-w-0 flex items-center gap-3">
+                    <div class="app-header-bar flex items-center justify-between gap-4">
+                        <div class="app-brand min-w-0 flex items-center gap-3">
                             <div class="app-logo-wrap">
                                 <img
                                     src="assets/MTI Transparent.png"
@@ -21,14 +21,17 @@
                                     decoding="async"
                                 >
                             </div>
-                            <h1 class="hero-title app-header-title text-white tracking-tight">Semua Data Cuti</h1>
+                            <h1 class="hero-title app-header-title text-white tracking-tight">
+                                <span class="app-title-full">Semua Data Cuti</span>
+                                <span class="app-title-mobile">Data Cuti</span>
+                            </h1>
                             <span id="live-status-badge" class="status-pill header-status">
                                 <span class="status-dot"></span>
                                 Sinkron realtime aktif
                             </span>
                         </div>
 
-                        <div class="flex items-center gap-3">
+                        <div class="app-header-actions flex items-center gap-3">
                             <button id="jump-today" class="action-button header-today-button">
                                 <i class="ph-bold ph-crosshair-simple"></i>
                                 Hari Ini
@@ -47,43 +50,49 @@
             </div>
 
             <div class="app-content-shell pt-3 md:pt-4 px-4 md:px-8 pb-4 md:pb-5 flex-1 min-h-0 w-full flex flex-col">
-                <div id="data-view" class="content-view hidden flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
+                <div id="data-view" class="content-view data-view-shell hidden flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
                     <div class="glass-panel p-4 md:p-5 mb-4 md:mb-5">
-                        <div class="flex flex-col xl:flex-row gap-4 items-center justify-between">
-                            <div class="flex items-center gap-3 bg-[#020617]/80 px-3 py-1.5 rounded-full border border-border-color w-full xl:w-auto justify-between xl:justify-start">
+                        <div class="data-toolbar flex flex-col xl:flex-row gap-4 items-center justify-between">
+                            <div class="data-month-nav flex items-center gap-3 bg-[#020617]/80 px-3 py-1.5 rounded-full border border-border-color w-full xl:w-auto justify-between xl:justify-start">
                                 <button id="data-prev" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 rounded-md transition"><i class="ph-bold ph-caret-left"></i></button>
                                 <h2 id="data-month-year" class="text-base font-bold text-white min-w-[150px] text-center select-none">Desember 2025</h2>
                                 <button id="data-next" class="text-slate-400 hover:text-white p-2 hover:bg-slate-800 rounded-md transition"><i class="ph-bold ph-caret-right"></i></button>
                             </div>
 
-                            <div class="flex flex-col md:flex-row gap-3 w-full xl:w-auto">
-                                <div class="relative w-full md:w-48">
-                                    <i class="ph ph-users-three absolute left-3 top-2.5 text-slate-500"></i>
-                                    <select id="filter-group" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
-                                        <option value="all">Semua Group</option>
-                                    </select>
-                                    <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
-                                </div>
+                            <div class="data-toolbar-actions w-full xl:w-auto">
+                                <button id="toggle-data-filters" type="button" class="mobile-filter-toggle secondary-button">
+                                    <i class="ph-bold ph-sliders-horizontal"></i>
+                                    Filter & Cari
+                                </button>
+                                <div id="data-toolbar-controls" class="data-toolbar-controls flex flex-col md:flex-row gap-3 w-full xl:w-auto">
+                                    <div class="relative w-full md:w-48">
+                                        <i class="ph ph-users-three absolute left-3 top-2.5 text-slate-500"></i>
+                                        <select id="filter-group" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
+                                            <option value="all">Semua Group</option>
+                                        </select>
+                                        <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
+                                    </div>
 
-                                <div class="relative w-full md:w-48">
-                                    <i class="ph ph-briefcase absolute left-3 top-2.5 text-slate-500"></i>
-                                    <select id="filter-jabatan" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
-                                        <option value="all">Semua Jabatan</option>
-                                    </select>
-                                    <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
-                                </div>
+                                    <div class="relative w-full md:w-48">
+                                        <i class="ph ph-briefcase absolute left-3 top-2.5 text-slate-500"></i>
+                                        <select id="filter-jabatan" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
+                                            <option value="all">Semua Jabatan</option>
+                                        </select>
+                                        <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
+                                    </div>
 
-                                <div class="relative w-full md:w-56">
-                                    <i class="ph ph-notebook absolute left-3 top-2.5 text-slate-500"></i>
-                                    <select id="filter-jenis" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
-                                        <option value="all">Semua Jenis Cuti</option>
-                                    </select>
-                                    <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
-                                </div>
+                                    <div class="relative w-full md:w-56">
+                                        <i class="ph ph-notebook absolute left-3 top-2.5 text-slate-500"></i>
+                                        <select id="filter-jenis" class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-8 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full appearance-none cursor-pointer">
+                                            <option value="all">Semua Jenis Cuti</option>
+                                        </select>
+                                        <i class="ph ph-caret-down absolute right-3 top-2.5 text-slate-500 pointer-events-none"></i>
+                                    </div>
 
-                                <div class="relative w-full md:w-64">
-                                    <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-500"></i>
-                                    <input id="data-search" type="text" placeholder="Cari nama karyawan..." class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full">
+                                    <div class="relative w-full md:w-64">
+                                        <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-500"></i>
+                                        <input id="data-search" type="text" placeholder="Cari nama karyawan..." class="bg-[#0f172a] border border-border-color text-text-main pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -102,20 +111,20 @@
 
                     <div id="data-summary" class="mb-4 md:mb-6"></div>
 
-                    <div id="data-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 pb-10"></div>
+                    <div id="data-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5 pb-10"></div>
                 </div>
 
                 <div id="calendar-view" class="content-view calendar-view-shell flex-1 min-h-0 flex flex-col">
                     <div class="calendar-stage grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 flex-grow min-h-0">
                         <div id="calendar-container" class="lg:col-span-8 h-full min-h-0 flex flex-col glass-panel overflow-hidden">
                             <div class="calendar-panel-head border-b border-border-color bg-[#1e293b]/90">
-                                <div class="flex justify-between items-center p-3">
+                                <div class="calendar-panel-toolbar flex justify-between items-center p-3">
                                     <button id="cal-prev" class="text-slate-400 hover:text-white p-2"><i class="ph-bold ph-caret-left"></i></button>
                                     <div class="text-center">
                                         <p class="calendar-kicker text-[11px] uppercase tracking-[0.24em] text-slate-500 mb-1">Peta Bulanan</p>
                                         <h2 id="cal-month-year" class="text-lg font-bold text-white">Desember 2025</h2>
                                     </div>
-                                    <div class="flex items-center gap-3">
+                                    <div class="calendar-panel-actions flex items-center gap-3">
                                         <button id="cal-next" class="text-slate-400 hover:text-white p-2"><i class="ph-bold ph-caret-right"></i></button>
                                         <div class="calendar-view-chip text-[11px] uppercase tracking-[0.18em] text-blue-200 bg-blue-500/10 border border-blue-400/20 px-3 py-1.5 rounded-full font-semibold">Month View</div>
                                     </div>
@@ -165,7 +174,7 @@
                 </div>
             </div>
 
-            <footer class="mt-auto px-4 md:px-8 py-3 text-xs text-slate-500 border-t border-slate-800 bg-[#020617]/80 backdrop-blur">
+            <footer class="app-footer mt-auto px-4 md:px-8 py-3 text-xs text-slate-500 border-t border-slate-800 bg-[#020617]/80 backdrop-blur">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <span>Monitor Data Cuti Karyawan</span>
                     <span>Sinkron terakhir: <span id="last-sync-label">Belum ada</span></span>

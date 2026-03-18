@@ -40,6 +40,10 @@
     white-space: nowrap;
 }
 
+.app-title-mobile {
+    display: none;
+}
+
 .app-logo-wrap {
     display: inline-flex;
     align-items: center;
